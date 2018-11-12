@@ -1,4 +1,5 @@
 import os
+import sqlite3
 from prettytable import PrettyTable
 from collections import defaultdict
 
@@ -150,11 +151,13 @@ class Repository:
     def print_pretty_table_inst(self):
         """Returns Pretty table for instructors with table labels:
         CWID, Name, Department, Course, Number of Students (in that respective course)"""
-        pt = PrettyTable(field_names = ['CWID', 'Name', 'Department', 'Course', 'Number of Students'])
-        for cwid in self.instructors:                     #prints out the list of files and information as a prettytable
-            for course in self.instructors[cwid].pretty_table_info():
-                pt.add_row(course)
-        print(pt)
+        DB_File= 'C:\\workspace\\UniversityDatabase\\810_startup.db'
+        db= sqlite3.connect(DB_File)
+        for row in db.execute("""select CWID, Name, Dept, Course, count(Student_CWID) as Students 
+                                     from HW11_instructors join HW11_grades
+                                 on HW11_instructors.CWID = HW11_grades.Instructor_CWID group by Course"""):
+                                 print(row)
+
 
     def print_pretty_table_major(self):
         """Returns Pretty table for majors with table labels:
@@ -191,6 +194,8 @@ def main():
     """Prints pretty table for students and instructors"""
     directory = r'C:\workspace\SSW810\HW09data'
     stevens = Repository(directory, prettytable = True)
+
+    
 
 if __name__ == '__main__':
     main()
