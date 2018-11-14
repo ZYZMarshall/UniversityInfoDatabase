@@ -143,6 +143,15 @@ class Repository:
     def print_pretty_table_stud(self):
         """Returns pretty table for student with table labels:
         CWID, Name, Courses (in sorted order)"""
+        pt = PrettyTable(field_names = ['CWID', 'Name', 'Major', 'Completed Courses', 'Remaining Required', 'Remaining Electives'])
+        for cwid in self.students:                     #prints out the list of files and information as a prettytable
+            pt.add_row(self.students[cwid].pretty_table_info())
+        print(pt)
+                              
+
+    def print_pretty_table_inst(self):
+        """Returns Pretty table for instructors with table labels:
+        CWID, Name, Department, Course, Number of Students (in that respective course)"""
         pt = PrettyTable(field_names = ['CWID', 'Name', 'Department', 'Course', 'Number of Students'])
         DB_File= 'C:\\workspace\\UniversityDatabase\\810_startup.db'
         db= sqlite3.connect(DB_File)
@@ -152,16 +161,6 @@ class Repository:
                                 pt.add_row(row)
                                 
         print (pt)
-
-    def print_pretty_table_inst(self):
-        """Returns Pretty table for instructors with table labels:
-        CWID, Name, Department, Course, Number of Students (in that respective course)"""
-        DB_File= 'C:\\workspace\\UniversityDatabase\\810_startup.db'
-        db= sqlite3.connect(DB_File)
-        for row in db.execute("""select CWID, Name, Dept, Course, count(Student_CWID) as Students 
-                                     from HW11_instructors join HW11_grades
-                                 on HW11_instructors.CWID = HW11_grades.Instructor_CWID group by Course"""):
-                                 print(row)
 
 
     def print_pretty_table_major(self):
